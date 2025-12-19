@@ -1,0 +1,28 @@
+{
+  "name": "casewatch-web",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.26.1",
+  "scripts": {
+    "dev": "next dev --turbopack -p 53200",
+    "build": "next build",
+    "start": "next start -p 53200",
+    "lint": "eslint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.1.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.0",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3"
+  }
+}
