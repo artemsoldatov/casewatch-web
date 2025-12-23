@@ -1,6 +1,6 @@
 import "server-only";
 import { getSession } from "./auth";
-import type { Role } from "./types";
+import type { Alert, Paginated, Role } from "./types";
 
 const BASE = process.env.API_URL ?? "http://127.0.0.1:8000/api";
 
@@ -47,4 +47,17 @@ export async function login(
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
+}
+
+export interface AlertFilters {
+  status?: string;
+  severity?: string;
+}
+
+export async function listAlerts(filters: AlertFilters = {}): Promise<Paginated<Alert>> {
+  const qs = new URLSearchParams();
+  if (filters.status) qs.set("status", filters.status);
+  if (filters.severity) qs.set("severity", filters.severity);
+  const suffix = qs.toString() ? `?${qs}` : "";
+  return authed(`/alerts${suffix}`);
 }
