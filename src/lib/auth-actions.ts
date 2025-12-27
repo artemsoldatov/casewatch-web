@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { login } from "./api";
-import { setSession } from "./auth";
+import { clearSession, setSession } from "./auth";
 import { ApiError } from "./api";
 
 export interface LoginState {
@@ -27,4 +27,9 @@ export async function loginAction(
   }
 
   redirect("/alerts");
+}
+
+export async function logoutAction(): Promise<void> {
+  await clearSession();
+  redirect("/login");
 }

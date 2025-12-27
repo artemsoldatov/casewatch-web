@@ -32,3 +32,10 @@ export async function setSession(session: Session): Promise<void> {
   jar.set(ROLE, session.role, opts);
   jar.set(NAME, session.name, opts);
 }
+
+export async function clearSession(): Promise<void> {
+  const jar = await cookies();
+  jar.delete(TOKEN);
+  jar.delete(ROLE);
+  jar.delete(NAME);
+}
