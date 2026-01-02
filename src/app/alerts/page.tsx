@@ -2,12 +2,18 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { listAlerts } from "@/lib/api";
 import { AlertsTable } from "@/components/AlertsTable";
+import { Filters } from "@/components/Filters";
 
-export default async function AlertsPage() {
+export default async function AlertsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; severity?: string }>;
+}) {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const page = await listAlerts();
+  const filters = await searchParams;
+  const page = await listAlerts(filters);
 
   return (
     <div className="space-y-6">
@@ -18,6 +24,7 @@ export default async function AlertsPage() {
             {page.total} open case{page.total === 1 ? "" : "s"}, highest risk first
           </p>
         </div>
+        <Filters status={filters.status} severity={filters.severity} />
       </div>
 
       <AlertsTable alerts={page.data} />
