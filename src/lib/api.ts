@@ -2,6 +2,7 @@ import "server-only";
 import { getSession } from "./auth";
 import type { Alert, Paginated, Role } from "./types";
 
+
 const BASE = process.env.API_URL ?? "http://127.0.0.1:8000/api";
 
 export class ApiError extends Error {
@@ -60,4 +61,8 @@ export async function listAlerts(filters: AlertFilters = {}): Promise<Paginated<
   if (filters.severity) qs.set("severity", filters.severity);
   const suffix = qs.toString() ? `?${qs}` : "";
   return authed(`/alerts${suffix}`);
+}
+
+export async function getAlert(id: string): Promise<{ alert: Alert }> {
+  return authed(`/alerts/${id}`);
 }
