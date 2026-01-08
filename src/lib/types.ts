@@ -45,3 +45,13 @@ export interface Paginated<T> {
   current_page: number;
   last_page: number;
 }
+
+export interface TimelineTx {
+  id: string;
+  direction: "in" | "out";
+  chain: string;
+  tx_hash: string;
+  amount_cents: number;
+  currency: string;
+  occurred_at: string;
+}

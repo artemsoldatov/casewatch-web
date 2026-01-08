@@ -1,6 +1,6 @@
 import "server-only";
 import { getSession } from "./auth";
-import type { Alert, Paginated, Role } from "./types";
+import type { Alert, Paginated, Role, TimelineTx } from "./types";
 
 
 const BASE = process.env.API_URL ?? "http://127.0.0.1:8000/api";
@@ -65,4 +65,9 @@ export async function listAlerts(filters: AlertFilters = {}): Promise<Paginated<
 
 export async function getAlert(id: string): Promise<{ alert: Alert }> {
   return authed(`/alerts/${id}`);
+}
+
+export async function getTransactions(id: string): Promise<TimelineTx[]> {
+  const res = await authed<{ data: TimelineTx[] }>(`/alerts/${id}/transactions`);
+  return res.data;
 }

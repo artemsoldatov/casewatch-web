@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getAlert } from "@/lib/api";
+import { getAlert, getTransactions } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusPill } from "@/components/StatusPill";
+import { TransactionTimeline } from "@/components/TransactionTimeline";
 
 export default async function AlertDetailPage({
   params,
@@ -16,6 +17,7 @@ export default async function AlertDetailPage({
 
   const { id } = await params;
   const { alert } = await getAlert(id);
+  const transactions = await getTransactions(id);
   const cp = alert.counterparty;
 
   return (
@@ -39,7 +41,20 @@ export default async function AlertDetailPage({
           <Field label="Chain" value={cp.chain} />
         </div>
       )}
+
+      <Section title={`Transactions (${transactions.length})`}>
+        <TransactionTimeline transactions={transactions} />
+      </Section>
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h2>
+      {children}
+    </section>
   );
 }
 
