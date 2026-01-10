@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getAlert, getTransactions } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
+import { AuditTrail } from "@/components/AuditTrail";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusPill } from "@/components/StatusPill";
 import { TransactionTimeline } from "@/components/TransactionTimeline";
@@ -16,7 +17,7 @@ export default async function AlertDetailPage({
   if (!session) redirect("/login");
 
   const { id } = await params;
-  const { alert } = await getAlert(id);
+  const { alert, audit } = await getAlert(id);
   const transactions = await getTransactions(id);
   const cp = alert.counterparty;
 
@@ -42,9 +43,19 @@ export default async function AlertDetailPage({
         </div>
       )}
 
-      <Section title={`Transactions (${transactions.length})`}>
-        <TransactionTimeline transactions={transactions} />
-      </Section>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <Section title={`Transactions (${transactions.length})`}>
+            <TransactionTimeline transactions={transactions} />
+          </Section>
+        </div>
+
+        <div className="space-y-6">
+          <Section title="Audit trail">
+            <AuditTrail events={audit} />
+          </Section>
+        </div>
+      </div>
     </div>
   );
 }

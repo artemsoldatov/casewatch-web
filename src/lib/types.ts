@@ -55,3 +55,11 @@ export interface TimelineTx {
   currency: string;
   occurred_at: string;
 }
+
+export interface AuditEvent {
+  id: string;
+  action: string;
+  actor_id: string | null;
+  meta: Record<string, unknown> | null;
+  created_at: string;
+}
