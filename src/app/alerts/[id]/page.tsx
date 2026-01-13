@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getAlert, getTransactions } from "@/lib/api";
+import { notFound, redirect } from "next/navigation";
+import { getAlert, getTransactions, ApiError } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 import { AuditTrail } from "@/components/AuditTrail";
@@ -17,8 +17,17 @@ export default async function AlertDetailPage({
   if (!session) redirect("/login");
 
   const { id } = await params;
-  const { alert, audit } = await getAlert(id);
+
+  let data;
+  try {
+    data = await getAlert(id);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) notFound();
+    throw err;
+  }
+
   const transactions = await getTransactions(id);
+  const { alert, audit } = data;
   const cp = alert.counterparty;
 
   return (
