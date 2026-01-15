@@ -63,3 +63,11 @@ export interface AuditEvent {
   meta: Record<string, unknown> | null;
   created_at: string;
 }
+
+export interface Assessment {
+  score: number;
+  severity: Severity;
+  recommendation: "escalate" | "review" | "monitor";
+  summary: string;
+  factors: Finding[];
+}
