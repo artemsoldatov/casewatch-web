@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getAlert, getTransactions, ApiError } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
+import { AssessmentStream } from "@/components/AssessmentStream";
 import { AuditTrail } from "@/components/AuditTrail";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusPill } from "@/components/StatusPill";
@@ -54,6 +55,10 @@ export default async function AlertDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
+          <Section title="Risk assessment">
+            <AssessmentStream alertId={alert.id} />
+          </Section>
+
           <Section title={`Transactions (${transactions.length})`}>
             <TransactionTimeline transactions={transactions} />
           </Section>
