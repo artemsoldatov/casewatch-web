@@ -5,9 +5,18 @@ import { readAssessmentStream, type StreamEvent } from "@/lib/stream";
 import type { Finding } from "@/lib/types";
 import { money, shortHash } from "@/lib/format";
 
+type Verdict = Extract<StreamEvent, { type: "verdict" }>;
+
+const RECOMMENDATION_CLASS: Record<Verdict["recommendation"], string> = {
+  escalate: "bg-red-50 text-red-700 ring-red-600/20",
+  review: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  monitor: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+};
+
 export function AssessmentStream({ alertId }: { alertId: string }) {
   const [status, setStatus] = useState("Requesting analysis…");
   const [factors, setFactors] = useState<Finding[]>([]);
+  const [verdict, setVerdict] = useState<Verdict | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -15,9 +24,10 @@ export function AssessmentStream({ alertId }: { alertId: string }) {
 
     readAssessmentStream(
       alertId,
-      (event: StreamEvent) => {
+      (event) => {
         if (event.type === "status") setStatus(event.message);
         if (event.type === "factor") setFactors((prev) => [...prev, event.factor]);
+        if (event.type === "verdict") setVerdict(event);
       },
       controller.signal,
     ).catch((err) => {
@@ -34,9 +44,11 @@ export function AssessmentStream({ alertId }: { alertId: string }) {
 
   return (
     <div className="space-y-3" data-testid="assessment">
-      <p className="animate-pulse text-sm text-slate-500" data-testid="assessment-status">
-        {status}
-      </p>
+      {!verdict && (
+        <p className="animate-pulse text-sm text-slate-500" data-testid="assessment-status">
+          {status}
+        </p>
+      )}
 
       {factors.map((f, i) => (
         <div key={`${f.rule}-${i}`} className="rounded-lg border border-slate-200 bg-white p-4" data-testid="factor-card">
@@ -57,6 +69,18 @@ export function AssessmentStream({ alertId }: { alertId: string }) {
           )}
         </div>
       ))}
+
+      {verdict && (
+        <div
+          className={`rounded-lg p-4 ring-1 ring-inset ${RECOMMENDATION_CLASS[verdict.recommendation]}`}
+          data-testid="verdict"
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide">
+            Recommendation: {verdict.recommendation}
+          </p>
+          <p className="mt-1 text-sm">{verdict.summary}</p>
+        </div>
+      )}
     </div>
   );
 }

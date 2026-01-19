@@ -5,9 +5,9 @@ export const dynamic = "force-dynamic";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// Streams the assessment as it is "generated": a status line, then one card
-// per risk factor. Deterministic and offline — a real LLM provider would
-// drop in here without changing the client.
+// Streams the assessment as it is "generated": a status line, one card per risk
+// factor, then the verdict. Deterministic and offline — a real LLM provider
+// would drop in here without changing the client.
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -45,6 +45,15 @@ export async function GET(
         await sleep(350);
       }
 
+      controller.enqueue(
+        line({
+          type: "verdict",
+          recommendation: assessment.recommendation,
+          summary: assessment.summary,
+          score: assessment.score,
+          severity: assessment.severity,
+        }),
+      );
       controller.close();
     },
   });
