@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getAlert, getTransactions, ApiError } from "@/lib/api";
+import { getAlert, getSar, getTransactions, ApiError } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 import { AssessmentStream } from "@/components/AssessmentStream";
 import { AuditTrail } from "@/components/AuditTrail";
+import { SarDraft } from "@/components/SarDraft";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusPill } from "@/components/StatusPill";
 import { TransactionTimeline } from "@/components/TransactionTimeline";
@@ -27,7 +28,7 @@ export default async function AlertDetailPage({
     throw err;
   }
 
-  const transactions = await getTransactions(id);
+  const [transactions, sar] = await Promise.all([getTransactions(id), getSar(id)]);
   const { alert, audit } = data;
   const cp = alert.counterparty;
 
@@ -68,6 +69,8 @@ export default async function AlertDetailPage({
           <Section title="Audit trail">
             <AuditTrail events={audit} />
           </Section>
+
+          <SarDraft sar={sar} />
         </div>
       </div>
     </div>

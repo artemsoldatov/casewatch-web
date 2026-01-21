@@ -46,16 +46,6 @@ export interface Paginated<T> {
   last_page: number;
 }
 
-export interface TimelineTx {
-  id: string;
-  direction: "in" | "out";
-  chain: string;
-  tx_hash: string;
-  amount_cents: number;
-  currency: string;
-  occurred_at: string;
-}
-
 export interface AuditEvent {
   id: string;
   action: string;
@@ -70,4 +60,26 @@ export interface Assessment {
   recommendation: "escalate" | "review" | "monitor";
   summary: string;
   factors: Finding[];
+}
+
+export interface TimelineTx {
+  id: string;
+  direction: "in" | "out";
+  chain: string;
+  tx_hash: string;
+  amount_cents: number;
+  currency: string;
+  occurred_at: string;
+}
+
+export interface SarDraft {
+  subject: {
+    counterparty_id: string;
+    name: string | null;
+    country: string | null;
+    wallet: string | null;
+  };
+  alert: { type: string; severity: Severity; score: number };
+  narrative: string;
+  disclaimer: string;
 }

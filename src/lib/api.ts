@@ -1,6 +1,14 @@
 import "server-only";
 import { getSession } from "./auth";
-import type { Alert, Assessment, AuditEvent, Paginated, Role, TimelineTx } from "./types";
+import type {
+  Alert,
+  Assessment,
+  AuditEvent,
+  Paginated,
+  Role,
+  SarDraft,
+  TimelineTx,
+} from "./types";
 
 
 const BASE = process.env.API_URL ?? "http://127.0.0.1:8000/api";
@@ -74,4 +82,8 @@ export async function getTransactions(id: string): Promise<TimelineTx[]> {
 
 export async function getAssessment(id: string): Promise<Assessment> {
   return authed(`/alerts/${id}/assessment`);
+}
+
+export async function getSar(id: string): Promise<SarDraft> {
+  return authed(`/alerts/${id}/sar`);
 }
