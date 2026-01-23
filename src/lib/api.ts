@@ -10,7 +10,6 @@ import type {
   TimelineTx,
 } from "./types";
 
-
 const BASE = process.env.API_URL ?? "http://127.0.0.1:8000/api";
 
 export class ApiError extends Error {
@@ -75,15 +74,25 @@ export async function getAlert(id: string): Promise<{ alert: Alert; audit: Audit
   return authed(`/alerts/${id}`);
 }
 
+export async function getAssessment(id: string): Promise<Assessment> {
+  return authed(`/alerts/${id}/assessment`);
+}
+
 export async function getTransactions(id: string): Promise<TimelineTx[]> {
   const res = await authed<{ data: TimelineTx[] }>(`/alerts/${id}/transactions`);
   return res.data;
 }
 
-export async function getAssessment(id: string): Promise<Assessment> {
-  return authed(`/alerts/${id}/assessment`);
-}
-
 export async function getSar(id: string): Promise<SarDraft> {
   return authed(`/alerts/${id}/sar`);
+}
+
+export async function disposition(
+  id: string,
+  body: { action: string; note?: string; assignee?: string },
+): Promise<{ alert: Alert }> {
+  return authed(`/alerts/${id}/disposition`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 }
