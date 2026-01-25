@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { titleCase } from "@/lib/format";
 import { AssessmentStream } from "@/components/AssessmentStream";
 import { AuditTrail } from "@/components/AuditTrail";
+import { DispositionPanel } from "@/components/DispositionPanel";
 import { SarDraft } from "@/components/SarDraft";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusPill } from "@/components/StatusPill";
@@ -66,6 +67,10 @@ export default async function AlertDetailPage({
         </div>
 
         <div className="space-y-6">
+          <Section title="Disposition">
+            <DispositionPanel alertId={alert.id} />
+          </Section>
+
           <Section title="Audit trail">
             <AuditTrail events={audit} />
           </Section>
