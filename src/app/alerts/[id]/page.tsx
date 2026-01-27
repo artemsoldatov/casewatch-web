@@ -68,7 +68,7 @@ export default async function AlertDetailPage({
 
         <div className="space-y-6">
           <Section title="Disposition">
-            <DispositionPanel alertId={alert.id} />
+            <DispositionPanel alertId={alert.id} role={session.role} />
           </Section>
 
           <Section title="Audit trail">
@@ -82,20 +82,20 @@ export default async function AlertDetailPage({
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section>
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
       <dd className="mt-0.5 font-medium">{value}</dd>
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h2>
+      {children}
+    </section>
   );
 }

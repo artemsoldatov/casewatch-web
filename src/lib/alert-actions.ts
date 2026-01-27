@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { disposition } from "./api";
+import { disposition, ApiError } from "./api";
 
 export interface DispositionState {
   ok?: boolean;
@@ -23,7 +23,13 @@ export async function dispositionAction(
       note: note || undefined,
       assignee: assignee || undefined,
     });
-  } catch {
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 403) {
+      return { error: "Only leads can clear or escalate a case." };
+    }
+    if (err instanceof ApiError && err.status === 422) {
+      return { error: "This action needs an assignee." };
+    }
     return { error: "Could not apply the disposition." };
   }
 

@@ -2,11 +2,13 @@
 
 import { useActionState } from "react";
 import { dispositionAction, type DispositionState } from "@/lib/alert-actions";
+import type { Role } from "@/lib/types";
 
 const initial: DispositionState = {};
 
-export function DispositionPanel({ alertId }: { alertId: string }) {
+export function DispositionPanel({ alertId, role }: { alertId: string; role: Role }) {
   const [state, action, pending] = useActionState(dispositionAction, initial);
+  const isLead = role === "lead";
 
   return (
     <form action={action} className="space-y-3">
@@ -54,7 +56,30 @@ export function DispositionPanel({ alertId }: { alertId: string }) {
         >
           Assign
         </button>
+        <button
+          type="submit"
+          name="action"
+          value="escalate"
+          disabled={pending || !isLead}
+          title={isLead ? undefined : "Lead role required"}
+          className="rounded border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 disabled:opacity-40"
+        >
+          Escalate
+        </button>
+        <button
+          type="submit"
+          name="action"
+          value="clear"
+          disabled={pending || !isLead}
+          title={isLead ? undefined : "Lead role required"}
+          className="rounded border border-emerald-300 px-3 py-1.5 text-sm font-medium text-emerald-700 disabled:opacity-40"
+        >
+          Clear
+        </button>
       </div>
+      {!isLead && (
+        <p className="text-xs text-slate-400">Clear and escalate are limited to leads.</p>
+      )}
     </form>
   );
 }
