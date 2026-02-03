@@ -15,11 +15,13 @@ export default defineConfig({
     {
       command: "node e2e/mock-api.mjs",
       port: 53250,
+      reuseExistingServer: !process.env.CI,
     },
     {
       // point the Next server-side fetches at the fixture API
       command: "pnpm dev",
       url: BASE_URL,
+      reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: { API_URL: MOCK_API },
     },
